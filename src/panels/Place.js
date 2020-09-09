@@ -26,6 +26,10 @@ const Place = ({ item, order, onIncrementPosition, onDecrementPosition, area }) 
     return accounting.formatNumber(result, 0, ' ');
   }, [ order, item ]);
 
+    function checkCanOrder(event) {
+        if (!Object.values(order).some(el => { return  el.count > 0 })) event.preventDefault()
+    }
+
   return (
     <div className="Place">
       <header className="Place__header">
@@ -101,7 +105,7 @@ const Place = ({ item, order, onIncrementPosition, onDecrementPosition, area }) 
         )))}
       </ul>
       <footer className="Place__footer">
-        <Link to={`/basket/${area.id}/${item.id}`} className="Place__order">
+        <Link to={`/basket/${area.id}/${item.id}`} className="Place__order" onClick={ (e) => checkCanOrder(e) }>
           Оформить заказ ({price})
         </Link>
       </footer>
