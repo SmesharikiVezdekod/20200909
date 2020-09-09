@@ -9,9 +9,14 @@ import './place.css';
 
 
 const Basket = ({ match: { params: { areaId, itemId }}, foodAreas, order }) => {
-  const [ faster, setFaster ] = useState(true);
-  const [ time, setTime ] = useState('');
-  const [ selfService, setSelfService ] = useState(false);
+
+  const fasterKey = "faster_" + itemId
+  const timeKey = "time_" + itemId
+  const selfServiceKey = "selfService_" + itemId
+
+  const [ faster, setFaster ] = useState(JSON.parse(localStorage.getItem(fasterKey)) || true);
+  const [ time, setTime ] = useState(JSON.parse(localStorage.getItem(timeKey)) || '');
+  const [ selfService, setSelfService ] = useState(JSON.parse(localStorage.getItem(selfServiceKey)) || false);
   const area = foodAreas.filter(area => area.id === areaId)[0];
   const item = area.items.filter(item => item.id === itemId)[0];
 
@@ -110,9 +115,11 @@ const Basket = ({ match: { params: { areaId, itemId }}, foodAreas, order }) => {
           <Checkbox 
             checked={faster} 
             onToggle={() => {
+              localStorage.setItem(fasterKey, JSON.stringify(!faster))
               if (faster) {
                 setFaster(false);
               } else {
+                localStorage.setItem(timeKey, JSON.stringify(''))
                 setTime('');
                 setFaster(true);
               }
@@ -126,25 +133,35 @@ const Basket = ({ match: { params: { areaId, itemId }}, foodAreas, order }) => {
             value={time}
             onFocus={() => {
               setFaster(false);
+              localStorage.setItem(fasterKey, JSON.stringify(false))
             }}
             onChange={event => {
               setFaster(false);
               setTime(event.target.value);
+              localStorage.setItem(fasterKey, JSON.stringify(false))
+              localStorage.setItem(timeKey, JSON.stringify(event.target.value))
             }}
             onBlur={() => {
               if (time) {
                 setFaster(false);
+                localStorage.setItem(fasterKey, JSON.stringify(false))
               }
             }}
           />
         </div>
         <div className="Place__choice-item">
           <h3>С собой</h3>
-          <Checkbox checked={selfService} onToggle={() => setSelfService(!selfService)} />
+          <Checkbox checked={selfService} onToggle={() => {
+            localStorage.setItem(selfServiceKey, JSON.stringify(!selfService))
+            setSelfService(!selfService)
+          }} />
         </div>
         <div className="Place__choice-item">
           <h3>На месте</h3>
-          <Checkbox checked={!selfService} onToggle={() => setSelfService(!setSelfService)} />
+          <Checkbox checked={!selfService} onToggle={() => {
+            localStorage.setItem(selfServiceKey, JSON.stringify(!selfService))
+            setSelfService(!selfService)
+          }} />
         </div>
       </div>
       <footer className="Place__footer">
