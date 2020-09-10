@@ -115,14 +115,17 @@ const Basket = ({ match: { params: { areaId, itemId }}, foodAreas, order }) => {
           <Checkbox 
             checked={faster} 
             onToggle={() => {
-              localStorage.setItem(fasterKey, JSON.stringify(!faster))
-              if (faster) {
+                if (!time)
+                    return
+
+                localStorage.setItem(fasterKey, JSON.stringify(!faster))
+                if (faster) {
                 setFaster(false);
-              } else {
+                } else {
                 localStorage.setItem(timeKey, JSON.stringify(''))
                 setTime('');
                 setFaster(true);
-              }
+                }
             }}
           />
         </div>
@@ -132,10 +135,19 @@ const Basket = ({ match: { params: { areaId, itemId }}, foodAreas, order }) => {
             type="time"
             value={time}
             onChange={event => {
-              setFaster(false);
-              setTime(event.target.value);
-              localStorage.setItem(fasterKey, JSON.stringify(false))
-              localStorage.setItem(timeKey, JSON.stringify(event.target.value))
+                const newValue = event.target.value
+
+                if (newValue) {
+                    setFaster(false);
+                    setTime(newValue);
+                    localStorage.setItem(fasterKey, JSON.stringify(false))
+                    localStorage.setItem(timeKey, JSON.stringify(newValue))
+                } else {
+                    setFaster(true);
+                    setTime(newValue);
+                    localStorage.setItem(fasterKey, JSON.stringify(true))
+                    localStorage.setItem(timeKey, JSON.stringify(newValue))
+                }
             }}
             onBlur={() => {
               if (time) {
