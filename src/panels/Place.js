@@ -27,7 +27,15 @@ const Place = ({ item, order, onIncrementPosition, onDecrementPosition, area }) 
   }, [ order, item ]);
 
     function checkCanOrder(event) {
-        if (!Object.values(order).some(el => { return  el.count > 0 })) event.preventDefault()
+        const foodIds = new Set((item.foods || []).map(item => item.id));
+
+        const placeFoods = Object.values(order)
+            .filter((value) => {
+                const { item: { id }} = value;
+                return foodIds.has(id);
+            })
+
+        if (!placeFoods.some(el => { return  el.count > 0 })) event.preventDefault()
     }
 
   return (
