@@ -39,6 +39,18 @@ const Basket = ({ match: { params: { areaId, itemId }}, foodAreas, order }) => {
     return [ accounting.formatNumber(result, 0, ' '), products ];
   }, [ order, item ]);
 
+    function checkCanPay(event) {
+        const foodIds = new Set((item.foods || []).map(item => item.id));
+
+        const placeFoods = Object.values(order)
+            .filter((value) => {
+                const { item: { id }} = value;
+                return foodIds.has(id);
+            })
+
+        if (!placeFoods.some(el => { return  el.count > 0 })) event.preventDefault()
+    }
+
   return (
     <div className="Place">
       <header className="Place__header">
@@ -173,7 +185,7 @@ const Basket = ({ match: { params: { areaId, itemId }}, foodAreas, order }) => {
         </div>
       </div>
       <footer className="Place__footer">
-        <Link to={`/order/${area.id}/${item.id}`} className="Place__order">
+        <Link to={`/order/${area.id}/${item.id}`} className="Place__order" onClick={ (e) => checkCanPay(e) }>
           Оплатить {price}
         </Link>
       </footer>
