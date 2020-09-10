@@ -14,7 +14,7 @@ const Basket = ({ match: { params: { areaId, itemId }}, foodAreas, order }) => {
   const timeKey = "time_" + itemId
   const selfServiceKey = "selfService_" + itemId
 
-  const [ faster, setFaster ] = useState(JSON.parse(localStorage.getItem(fasterKey)) || true);
+  const [ faster, setFaster ] = useState(JSON.parse(localStorage.getItem(fasterKey) || true));
   const [ time, setTime ] = useState(JSON.parse(localStorage.getItem(timeKey)) || '');
   const [ selfService, setSelfService ] = useState(JSON.parse(localStorage.getItem(selfServiceKey)) || false);
   const area = foodAreas.filter(area => area.id === areaId)[0];
@@ -131,10 +131,6 @@ const Basket = ({ match: { params: { areaId, itemId }}, foodAreas, order }) => {
           <input
             type="time"
             value={time}
-            onFocus={() => {
-              setFaster(false);
-              localStorage.setItem(fasterKey, JSON.stringify(false))
-            }}
             onChange={event => {
               setFaster(false);
               setTime(event.target.value);
